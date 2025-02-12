@@ -10,8 +10,16 @@
         group: root
         mode: '0644'
       notify:
+        - reload systemd
         - restart node service
 
   handlers:
-    - name: Restart blockchain-node using service command
-      command: service blockchain-node restart
+    - name: reload systemd
+      systemd:
+        daemon_reload: yes
+
+    - name: restart node service
+      systemd:
+        name: blockchain-node
+        state: restarted
+        enabled: yes
