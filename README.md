@@ -78,3 +78,80 @@ You should see something like:
 Feb 12 10:27:41 <username> systemd[1]: Started blockchain-node.service - Fake Blockchain Node Service.
 
 ```
+## Step 2. Inventory file to access the Docker Nodes
+
+we've already added the `docker_ssh_logins.sh` script from a previous project `https://github.com/taminmahboubi/docker-ssh`, we will create a simple `inventory` file to access the nodes we created:
+
+```bash
+[servers]
+managed-node1 ansible_host=172.17.0.2 ansible_user=root ansible_ssh=1234
+managed-node2 ansible_host=172.17.0.3 ansible_user=root ansible_ssh=1234
+managed-node3 ansible_host=172.17.0.4 ansible_user=root ansible_ssh=1234
+
+```
+## Step 3. Create and deploy Ansible Playbook 
+
+We will create an Ansible Playbook that makes sure the service file `blockchain-node.service` is in place and manages enabling, starting, and restarting the service using Ansible.
+
+First we run the `docker_ssh_logins.sh` script to start Nodes, check the SSH status and Test the Connection:
+```bash
+bash docker_ssh_logins.sh 
+[=============== Nodes: ===============]
+
+[managed-node1] - Active
+
+[managed-node2] - Active
+
+[managed-node3] - Active
+
+[=============== SSH-Status ===============]
+
+[managed-node1] - stopped
+[managed-node1] - running
+
+[managed-node2] - stopped
+[managed-node2] - running
+
+[managed-node3] - stopped
+[managed-node3] - running
+
+[=============== SSH Connection ================]
+
+[managed-node1] - Successful
+
+[managed-node2] - Successful
+
+[managed-node3] - Successful
+
+```
+
+We can also run a basic connectivity test to all hosts defined in the inventory file using Ansible:
+` ansible -i inventory all -m ping`
+
+It should give the result:
+```bash
+anaged-node1 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+managed-node2 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+managed-node3 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+
+```
+
+ 

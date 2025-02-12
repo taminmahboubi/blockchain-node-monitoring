@@ -1,0 +1,17 @@
+---
+- name: Ensure node service configuration
+  hosts: all
+  tasks:        
+    - name: Copy blockchain-node.service to remote nodes
+      copy:
+        src: blockchain-node.service  # <-- Use the actual file name
+        dest: /etc/systemd/system/blockchain-node.service
+        owner: root
+        group: root
+        mode: '0644'
+      notify:
+        - restart node service
+
+  handlers:
+    - name: Restart blockchain-node using service command
+      command: service blockchain-node restart
